@@ -9,9 +9,7 @@ def add(bookingId, booking_obj):
     df_booking = fetch_data()
     booking_dict = booking_obj.dict()
     booking_dict['bookingId'] =  bookingId
-    print(booking_dict)
     df_booking = df_booking.append(booking_dict, ignore_index=True)
-    print(df_booking)
     save_data(df_booking)
     print('Booking saved!')
 

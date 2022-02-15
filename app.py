@@ -5,12 +5,12 @@ from crud import generate_booking_id, add, update, delete, get_booking_by_id, de
 app = FastAPI(title="Hotel Booking API")
 
 
-@app.get('/', tags=['Booking API'])
+@app.get('/', tags=['REST API'])
 def root():
     return {"message":"Welcome to TLO FastAPI Workshop!"}
 
 
-@app.post('/bookings', tags=['Booking API'])
+@app.post('/bookings', tags=['REST API'])
 def create_booking(bookingObj: Booking):
     newBookingId = generate_booking_id(bookingObj)
     add(newBookingId, bookingObj)
@@ -20,7 +20,7 @@ def create_booking(bookingObj: Booking):
         "message": "Booking created successfully"
     }
 
-@app.put('/bookings/{bookingId}', tags=['Booking API'])
+@app.put('/bookings/{bookingId}', tags=['REST API'])
 def update_booking(bookingId, bookingObj: UpdateBooking):
     result = update(bookingId, bookingObj)
     return {
@@ -30,7 +30,7 @@ def update_booking(bookingId, bookingObj: UpdateBooking):
         "booking": result['booking']
     }
 
-@app.delete('/bookings/{bookingId}', tags=['Booking API'])
+@app.delete('/bookings/{bookingId}', tags=['REST API'])
 def cancel_booking(bookingId):
     result = delete(bookingId)
     return {
@@ -38,7 +38,7 @@ def cancel_booking(bookingId):
         "message": result['message'],
     }
 
-@app.get('/bookings/{bookingId}', tags=['Booking API'])
+@app.get('/bookings/{bookingId}', tags=['REST API'])
 def view_booking(bookingId):
     result = get_booking_by_id(bookingId)
     return {
