@@ -59,6 +59,9 @@ def get_booking_by_id(bookingId):
 
     return {"status": status, "message": message, "booking":booking_info}
 
+def get_all_bookings():
+    pass
+
 def fetch_data():
     df_booking = pd.read_csv('data/booking_data.csv')
     return df_booking
