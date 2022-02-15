@@ -77,7 +77,7 @@ def delete(bookingId):
 
 def get_booking_by_id(bookingId):
     df_booking = fetch_data()
-    booking_info = df_booking.loc[df_booking['bookingId']==bookingId].T.to_dict('dict').values())[0]
+    booking_info = list(df_booking.loc[df_booking['bookingId']==bookingId].T.to_dict('dict').values())[0]
     return booking_info
 
 def fetch_data():
