@@ -13,6 +13,7 @@ def add(bookingId, booking_obj):
     save_data(df_booking)
     print('Booking saved!')
 
+
 def update(bookingId, booking_obj):
     df_booking = fetch_data()
     num_of_rows = len(df_booking.loc[df_booking['bookingId']==bookingId])
@@ -45,6 +46,7 @@ def delete(bookingId):
         status = False
     return {"status": status, "message": message}
 
+
 def get_booking_by_id(bookingId):
     df_booking = fetch_data()
     filter_df = df_booking.loc[df_booking['bookingId']==bookingId]
@@ -59,12 +61,15 @@ def get_booking_by_id(bookingId):
 
     return {"status": status, "message": message, "booking":booking_info}
 
+
 def get_all_bookings():
     pass
+
 
 def fetch_data():
     df_booking = pd.read_csv('data/booking_data.csv')
     return df_booking
+
 
 def save_data(df):
     df.to_csv('data/booking_data.csv', index=False)
