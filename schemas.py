@@ -1,15 +1,5 @@
 from datetime import datetime
-from lib2to3.pytree import Base
 from pydantic import BaseModel
-
-# class Booking(BaseModel):
-#     bookingId: str
-#     name: str
-#     pax: int
-#     roomType: str
-#     checkIn: datetime
-#     checkOut: datetime
-#     paymentStatus: str 
 
 
 class Booking(BaseModel):
@@ -26,3 +16,4 @@ class UpdateBooking(BaseModel):
     roomType: str = "Single Pod / Family Suite / Grand Deluxe"
     checkIn: datetime = "0000-00-00 00:00:00"
     checkOut: datetime = "0000-00-00 00:00:00"
+

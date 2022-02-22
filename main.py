@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from schemas import Booking, UpdateBooking
-from crud import generate_booking_id, add, update, delete, get_all_bookings
+from crud import generate_booking_id, add, update, delete, get_all_bookings, get_booking_by_id
 
 app = FastAPI(title="Hotel Booking API", description="")
 
@@ -63,7 +63,7 @@ def view_booking(bookingId):
 # Function: view_all_bookings() - Use API Key
 # Return: status, message, booking
 # Use `get_all_bookings()` function to get all booking details
-@app.get('/bookings/{api_key}', tags=['Admin Booking API'])
+# @app.get('/bookings/{api_key}', tags=['Admin Booking API'])
 def retrieve_all_bookings(api_key):
     result = get_all_bookings()
     return {
