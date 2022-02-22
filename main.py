@@ -40,22 +40,3 @@
 # Parameters: bookingId
 # Return: status, message, booking
 
-
-
-# ----------------------------------------------------
-# Function: view_all_bookings() - Use API Key
-# Return: status, message, booking
-# Use `get_all_bookings()` function to get all booking details
-
-
-# Function: update_payment_status() - Use API Key
-# Return: status, message, booking
-# Use `update_payment()` function to update payment status
-
-
-# Function: get_daily_bookings() - Use API Key
-# Parameters: date (format: 2022-01-01)
-# Return: date, number_of_bookings
-# Use `get_num_of_bookings_by_date()` function to get daily booking details
-
-
