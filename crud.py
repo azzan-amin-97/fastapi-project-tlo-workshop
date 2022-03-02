@@ -9,9 +9,15 @@ def add(bookingId, booking_obj):
     df_booking = fetch_data()
     booking_dict = booking_obj.dict()
     booking_dict['bookingId'] =  bookingId
+
+    # Assume Grand Deluxe rooms are fully booked
+    if booking_dict['roomType'] == "Grand Deluxe":
+        return {"status": False, "message": "Booking failed. Rooms are fully booked."}
+    
     df_booking = df_booking.append(booking_dict, ignore_index=True)
     save_data(df_booking)
     print('Booking saved!')
+    return {"status": True, "message": "Booking created successfully"}
 
 def update(bookingId, booking_obj):
     df_booking = fetch_data()
@@ -45,17 +51,38 @@ def delete(bookingId):
         status = False
     return {"status": status, "message": message}
 
-def get_booking_by_id(bookingId):
+def cancel(bookingId):
     df_booking = fetch_data()
-    filter_df = df_booking.loc[df_booking['bookingId']==bookingId]
-    if len(filter_df)>0:
-        booking_info = list(filter_df.T.to_dict('dict').values())[0]
-        message = 'Booking retrieved successfully'
+    num_of_rows = len(df_booking.loc[df_booking['bookingId']==bookingId])
+    if num_of_rows>0:
+        df_booking.loc[df_booking['bookingId']==bookingId, 'status'] = "cancelled"
+        save_data(df_booking)
+        message = 'Booking cancelled successfully'
         status = True
     else:
-        booking_info = {}
         message = 'Cannot found the booking ID'
         status = False
+    return {"status": status, "message": message}
+
+def get_booking_by_id(bookingId):
+
+    if isBookingCancelled(bookingId)['status']:
+        booking_info = isBookingCancelled(bookingId)['booking']
+        message = 'This booking already cancelled.'
+        status = True
+
+    else:
+
+        df_booking = fetch_data()
+        filter_df = df_booking.loc[df_booking['bookingId']==bookingId]
+        if len(filter_df)>0:
+            booking_info = list(filter_df.T.to_dict('dict').values())[0]
+            message = 'Booking retrieved successfully'
+            status = True
+        else:
+            booking_info = {}
+            message = 'Cannot found the booking ID'
+            status = False
 
     return {"status": status, "message": message, "booking":booking_info}
 
@@ -66,5 +93,17 @@ def fetch_data():
     df_booking = pd.read_csv('data/booking_data.csv')
     return df_booking
 
+def isBookingCancelled(booking_id):
+    booking_info = {}
+    df_booking = fetch_data()
+    filter_df = df_booking.loc[(df_booking['bookingId']==booking_id)&(df_booking['status']=="cancelled")]
+    if len(filter_df)>0:
+        booking_info = list(filter_df.T.to_dict('dict').values())[0]
+        status = True
+    else:
+        status = False
+    return {"booking":booking_info, "status":status}
+
 def save_data(df):
     df.to_csv('data/booking_data.csv', index=False)
+    

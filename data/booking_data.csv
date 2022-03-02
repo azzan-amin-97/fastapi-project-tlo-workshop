@@ -1,1 +1,2 @@
-bookingId,name,pax,roomType,checkIn,checkOut,paymentStatus
+bookingId,name,pax,roomType,checkIn,checkOut,paymentStatus,status
+20220302-175648-Azzan,Azzan,1,Single Pod,2022-03-02 17:56:48,2022-03-02 17:56:48,paid,cancelled

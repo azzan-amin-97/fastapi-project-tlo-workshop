@@ -1,9 +1,30 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status, Request
 from schemas import Booking, UpdateBooking
-from crud import generate_booking_id, add, update, delete, get_all_bookings, get_booking_by_id
+from fastapi.encoders import jsonable_encoder
+from crud import generate_booking_id, add, update, cancel, get_booking_by_id
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 app = FastAPI(title="Hotel Booking API", description="")
 
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content=jsonable_encoder({"status": False, "message":"Booking failed. Missing required parameter"}),
+    )
+class UnicornException(Exception):
+    def __init__(self, name: str):
+        self.name = name
+
+
+@app.exception_handler(UnicornException)
+async def unicorn_exception_handler(request: Request, exc: UnicornException):
+    return JSONResponse(
+        status_code=400,
+        content={"message": f"{exc.name}"},
+    )
 
 @app.get('/', tags=['Customer Booking API'])
 def root():
@@ -16,11 +37,18 @@ def root():
 @app.post('/bookings', tags=['Customer Booking API'])
 def create_booking(bookingObj: Booking):
     newBookingId = generate_booking_id(bookingObj)
-    add(newBookingId, bookingObj)
+    result = add(newBookingId, bookingObj)
+
+    if not result['status']:
+        return JSONResponse(
+        status_code=400,
+        content={"message": result['message'],"status":False},
+    )
+
     return {
-        "status": True,
+        "status": result['status'],
         "bookingId": newBookingId,
-        "message": "Booking created successfully"
+        "message": result['message']
     }
 
 # Function: update_booking()
@@ -41,7 +69,7 @@ def update_booking(bookingId, bookingObj: UpdateBooking):
 # Return: status, message
 @app.delete('/bookings/{bookingId}', tags=['Customer Booking API'])
 def cancel_booking(bookingId):
-    result = delete(bookingId)
+    result = cancel(bookingId)
     return {
         "status": result['status'],
         "message": result['message'],
@@ -58,28 +86,4 @@ def view_booking(bookingId):
         "message": result['message'],
         "booking": result['booking']
     }
-
-
-# Function: view_all_bookings() - Use API Key
-# Return: status, message, booking
-# Use `get_all_bookings()` function to get all booking details
-# @app.get('/bookings/{api_key}', tags=['Admin Booking API'])
-def retrieve_all_bookings(api_key):
-    result = get_all_bookings()
-    return {
-        "status": result['status'],
-        "message": result['message'],
-        "booking": result['booking']
-    }
-
-# Function: update_payment_status() - Use API Key
-# Return: status, message, booking
-# Use `update_payment()` function to update payment status
-
-
-# Function: get_daily_bookings() - Use API Key
-# Parameters: date (format: 2022-01-01)
-# Return: date, number_of_bookings
-# Use `get_num_of_bookings_by_date()` function to get daily booking details
-
 
